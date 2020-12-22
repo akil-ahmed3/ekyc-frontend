@@ -6,8 +6,6 @@ export default function SecondForm(props) {
   const [picture, setPicture] = useState(null)
   const [inputs, setInputs] = useState({})
 
-  // console.log(props.recordedChunks)
-
   const handleChange = (e) => {
     e.persist()
     setInputs((inputs) => ({ ...inputs, [e.target.name]: e.target.value }))
@@ -23,7 +21,7 @@ export default function SecondForm(props) {
       picture
     }
 
-    axios.post('http://localhost:8000/upload', data, {
+    axios.post('http://localhost:5000/upload', data, {
       // receive two    parameter endpoint url ,form data
     })
   }

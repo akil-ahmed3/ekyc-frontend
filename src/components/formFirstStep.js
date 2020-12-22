@@ -4,10 +4,7 @@ import { useState } from 'react'
 
 export default function From(props) {
   const [pan, setPan] = useState(null)
-  const [video, setVideo] = useState(null)
   const [inputs, setInputs] = useState({})
-
-  console.log(props.recordedChunks)
 
   const handleChange = (e) => {
     e.persist()
@@ -21,19 +18,25 @@ export default function From(props) {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const blob = new Blob(props.recordedChunks, {
+    const blob = new Blob([props.recordedChunks[props.recordedChunks.length - 1]], {
       type: 'video/webm'
     })
 
-    setVideo(blob)
-    const data = {
+    let form_data = new FormData()
+    let data = {
       name: inputs.name,
       email: inputs.email,
-      pan,
-      video
+      pan: pan,
+      video: blob
     }
 
-    axios.post('http://localhost:8000/upload', data, {
+    for (var key in data) {
+      form_data.append(key, data[key])
+    }
+
+    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+
+    axios.post('http://127.0.0.1:5000/upload_video', form_data, {
       // receive two    parameter endpoint url ,form data
     })
   }
@@ -72,7 +75,6 @@ export default function From(props) {
           <input
             class="form-control"
             type="file"
-            id="formFile"
             name="pan"
             onChange={handleFileChange}
           />
