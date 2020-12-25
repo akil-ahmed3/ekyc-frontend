@@ -13,15 +13,41 @@ export default function SecondForm(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    // setPicture(props.picture)
 
-    setPicture(props.picture)
+    function dataURLtoFile(dataurl, filename) {
+      var arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n)
+
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+
+      return new File([u8arr], filename, { type: mime })
+    }
+
+    //Usage example:
+    var file = dataURLtoFile(props.picture, 'img.jpg')
+
+    let form_data = new FormData()
     const data = {
       name: inputs.name,
       email: inputs.email,
-      picture
+      picture: file
     }
 
-    axios.post('http://localhost:5000/upload', data, {
+    // console.log(data.picture)
+
+    for (var key in data) {
+      form_data.append(key, data[key])
+    }
+
+    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+
+    axios.post('http://localhost:5000/test_face', form_data, {
       // receive two    parameter endpoint url ,form data
     })
   }
